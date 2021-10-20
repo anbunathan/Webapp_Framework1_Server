@@ -7,6 +7,7 @@ import Promise from "bluebird";
 
 import auth from "./routes/auth";
 import users from "./routes/users";
+const cors = require('cors');
 
 dotenv.config();
 const app = express();
@@ -21,8 +22,15 @@ app.post("/api/auth", (req,res) => {
     res.status(400).json({errors: {global:"Invalid credentials"}});
 });
 
-app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-  });
+// app.get("/*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "index.html"));
+//   });
 
-app.listen(8080, () => console.log("Running on localhost:8080"));
+// app.listen(8080, () => console.log("Running on localhost:8080"));
+
+app.use(express.static(path.join(__dirname, '..', 'client/build')));
+console.log("__dirname = %s", path.resolve(path.join(__dirname, '..', 'client/build', 'index.html')));
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, '..', 'client/build', 'index.html'));
+})
+app.listen(process.env.PORT || 8080, () => console.log("Running on localhost:8080"));
